@@ -1,3 +1,5 @@
+import { AuthErrorModal } from '../../components/AuthErrorModal'
+
 type RegisterScreenProps = {
   onSubmit: (payload: {
     name: string
@@ -8,6 +10,7 @@ type RegisterScreenProps = {
   onGoToLogin: () => void
   loading?: boolean
   error?: string
+  errorTrigger?: number
 }
 
 export function RegisterScreen({
@@ -15,6 +18,7 @@ export function RegisterScreen({
   onGoToLogin,
   loading,
   error,
+  errorTrigger,
 }: RegisterScreenProps) {
   return (
     <main className="auth-shell auth-shell--reverse">
@@ -23,20 +27,14 @@ export function RegisterScreen({
           <p className="eyebrow">CareAssist</p>
           <h1>Create your account and set up the family care workspace.</h1>
           <p className="auth-lede">
-            Register on a spacious, responsive screen that feels comfortable on phones, tablets,
-            and desktops.
+   
           </p>
 
-          <div className="auth-pills">
-            <span className="status-chip">Full-height</span>
-            <span className="status-chip">Responsive form</span>
-            <span className="status-chip">Clean spacing</span>
-          </div>
         </div>
 
         <div className="auth-hero-card">
           <div className="hero-card-top">
-            <p>Setup</p>
+            <p>Register</p>
             <span className="status-badge pending">Step 1</span>
           </div>
           <strong>Start with the account holder, then add people and reminders.</strong>
@@ -44,10 +42,7 @@ export function RegisterScreen({
             The layout expands to fit the screen instead of staying in a tiny centered box.
           </span>
           <div className="hero-card-footer">
-            <span className="hero-pulse">
-              <span className="hero-pulse-dot" />
-              Responsive registration screen
-            </span>
+       
             <span className="hero-card-note">Register</span>
           </div>
         </div>
@@ -111,13 +106,17 @@ export function RegisterScreen({
             />
           </label>
 
-          {error ? <p className="error-message">{error}</p> : null}
-
           <button type="submit" className="primary-button auth-submit" disabled={loading}>
             {loading ? 'Creating account...' : 'Create account'}
           </button>
         </form>
       </section>
+
+      <AuthErrorModal
+        title="Registration failed"
+        message={error && error.trim() ? error : undefined}
+        trigger={errorTrigger}
+      />
     </main>
   )
 }

@@ -3,14 +3,15 @@ import { useEffect, useState } from 'react'
 type AuthErrorModalProps = {
   message?: string
   title?: string
+  trigger?: number
 }
 
-export function AuthErrorModal({ message, title = 'Validation issue' }: AuthErrorModalProps) {
+export function AuthErrorModal({ message, title = 'Validation issue', trigger }: AuthErrorModalProps) {
   const [isOpen, setIsOpen] = useState(Boolean(message))
 
   useEffect(() => {
     setIsOpen(Boolean(message))
-  }, [message])
+  }, [message, trigger])
 
   if (!message || !isOpen) {
     return null

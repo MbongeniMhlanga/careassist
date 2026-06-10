@@ -5,9 +5,10 @@ type LoginScreenProps = {
   onGoToRegister: () => void
   loading?: boolean
   error?: string
+  errorTrigger?: number
 }
 
-export function LoginScreen({ onSubmit, onGoToRegister, loading, error }: LoginScreenProps) {
+export function LoginScreen({ onSubmit, onGoToRegister, loading, error, errorTrigger }: LoginScreenProps) {
   return (
     <main className="auth-shell">
       <section className="auth-hero">
@@ -15,15 +16,10 @@ export function LoginScreen({ onSubmit, onGoToRegister, loading, error }: LoginS
           <p className="eyebrow">CareAssist</p>
           <h1>One calm place for medication reminders on every device.</h1>
           <p className="auth-lede">
-            Sign in to keep families, schedules, and daily reminders in one place without the
-            screen feeling cramped on mobile, tablet, or desktop.
+            Sign in to keep families, schedules, and daily reminders in one place.
           </p>
 
-          <div className="auth-pills">
-            <span className="status-chip">Mobile friendly</span>
-            <span className="status-chip">Tablet ready</span>
-            <span className="status-chip">Desktop first</span>
-          </div>
+         
         </div>
 
         <div className="auth-hero-card">
@@ -37,10 +33,7 @@ export function LoginScreen({ onSubmit, onGoToRegister, loading, error }: LoginS
             ones.
           </span>
           <div className="hero-card-footer">
-            <span className="hero-pulse">
-              <span className="hero-pulse-dot" />
-              Responsive auth screen
-            </span>
+         
             <span className="hero-card-note">Login</span>
           </div>
         </div>
@@ -93,6 +86,7 @@ export function LoginScreen({ onSubmit, onGoToRegister, loading, error }: LoginS
       <AuthErrorModal
         title="Login failed"
         message={error && error.trim() ? error : undefined}
+        trigger={errorTrigger}
       />
     </main>
   )

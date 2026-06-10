@@ -1141,6 +1141,21 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .auth-hero {
+    display: none;
+  }
+
+  .auth-shell,
+  .auth-shell--reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-panel {
+    min-height: 100vh;
+  }
+}
+
 @media (max-width: 700px) {
   .shell,
   .content,
@@ -1200,7 +1215,6 @@
     padding: 16px;
   }
 
-  .auth-hero,
   .auth-panel {
     padding: 22px;
     border-radius: 24px;
@@ -1208,5 +1222,43 @@
 
   .auth-hero-copy h1 {
     max-width: none;
+  }
+}
+
+.auth-shell {
+  align-items: stretch;
+}
+
+.auth-hero {
+  min-height: 0;
+}
+
+@media (max-width: 1100px) {
+  .auth-shell,
+  .auth-shell--reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-hero {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-shell,
+  .auth-shell--reverse {
+    padding: 16px;
+  }
+
+  .auth-hero {
+    display: none;
+  }
+
+  .auth-panel {
+    align-items: stretch;
+  }
+
+  .auth-card {
+    padding: 20px;
   }
 }

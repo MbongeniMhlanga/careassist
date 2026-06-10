@@ -7,6 +7,7 @@ import { authApi } from '../services/api'
 export function RegisterAuthPage() {
   const navigate = useNavigate()
   const [error, setError] = useState<string | undefined>()
+  const [errorTrigger, setErrorTrigger] = useState(0)
 
   const registerMutation = useMutation({
     mutationFn: authApi.register,
@@ -18,17 +19,30 @@ export function RegisterAuthPage() {
   return (
     <RegisterScreen
       onSubmit={(payload) => {
+        if (payload.password.length < 6) {
+          setError('Password must be at least 6 characters long')
+          setErrorTrigger((value) => value + 1)
+          return
+        }
+
         if (payload.password !== payload.confirmPassword) {
           setError('Passwords do not match')
+          setErrorTrigger((value) => value + 1)
           return
         }
 
         setError(undefined)
-        registerMutation.mutate(payload)
+        registerMutation.mutate(payload, {
+          onError: (cause) => {
+            setError(cause instanceof Error ? cause.message : 'Unable to create account')
+            setErrorTrigger((value) => value + 1)
+          },
+        })
       }}
       onGoToLogin={() => navigate('/login')}
       loading={registerMutation.isPending}
-      error={error ?? (registerMutation.error instanceof Error ? registerMutation.error.message : undefined)}
+      error={error}
+      errorTrigger={errorTrigger}
     />
   )
 }
