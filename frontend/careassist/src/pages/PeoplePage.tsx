@@ -4,7 +4,6 @@ import { useCareAssistWorkspace } from '../context/CareAssistWorkspaceContext'
 export function PeoplePage() {
   const {
     users,
-    persons,
     selectedUserId,
     selectedPersonId,
     selectedUser,

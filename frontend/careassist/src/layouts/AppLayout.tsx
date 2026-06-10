@@ -1,15 +1,16 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useCareAssistWorkspace } from '../context/CareAssistWorkspaceContext'
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard' },
-  { to: '/register', label: 'Register' },
+  { to: '/users', label: 'Users' },
   { to: '/people', label: 'People' },
   { to: '/medications', label: 'Medications' },
   { to: '/reminders', label: 'Reminders' },
 ] as const
 
 export function AppLayout() {
+  const navigate = useNavigate()
   const { users, persons, medications, reminders, selectedUser, selectedPerson } = useCareAssistWorkspace()
 
   return (
@@ -64,6 +65,13 @@ export function AppLayout() {
           <p className="muted">
             {selectedPerson?.name ?? 'No person selected'} is currently in focus.
           </p>
+          <button
+            type="button"
+            className="primary-button secondary"
+            onClick={() => navigate('/login')}
+          >
+            Logout
+          </button>
         </section>
       </aside>
 
