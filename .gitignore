@@ -1,0 +1,12 @@
+# Build output
+backend/target/
+
+# Local environment files
+backend/.env
+backend/.env.local
+backend/.env.*
+!backend/.env.example
+
+# IDE files
+.idea/
+*.iml
