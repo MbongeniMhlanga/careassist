@@ -1,5 +1,3 @@
-import { AuthErrorModal } from '../../components/AuthErrorModal'
-
 type RegisterScreenProps = {
   onSubmit: (payload: {
     name: string
@@ -10,7 +8,6 @@ type RegisterScreenProps = {
   onGoToLogin: () => void
   loading?: boolean
   error?: string
-  errorTrigger?: number
 }
 
 export function RegisterScreen({
@@ -18,31 +15,30 @@ export function RegisterScreen({
   onGoToLogin,
   loading,
   error,
-  errorTrigger,
 }: RegisterScreenProps) {
   return (
     <main className="auth-shell auth-shell--reverse">
       <section className="auth-hero">
         <div className="auth-hero-copy">
           <p className="eyebrow">CareAssist</p>
-          <h1>Create your account and set up the family care workspace.</h1>
+          <h1>Set up care for the people you love.</h1>
           <p className="auth-lede">
-   
+            Create your account, then add you and your family members, their medication details,
+            and reminder times.
           </p>
-
         </div>
 
         <div className="auth-hero-card">
           <div className="hero-card-top">
-            <p>Register</p>
+            <p>CareAssist</p>
             <span className="status-badge pending">Step 1</span>
           </div>
-          <strong>Start with the account holder, then add people and reminders.</strong>
+          <strong>Start a calm, family-focused setup for medication reminders and tracking.</strong>
           <span className="muted-on-dark">
-            The layout expands to fit the screen instead of staying in a tiny centered box.
+            Begin with one account and grow into a simple care space for children, parents, and
+            grandparents.
           </span>
           <div className="hero-card-footer">
-       
             <span className="hero-card-note">Register</span>
           </div>
         </div>
@@ -51,14 +47,20 @@ export function RegisterScreen({
       <section className="auth-panel">
         <div className="form-heading auth-form-heading">
           <div>
-            <p className="form-badge">Register</p>
+            <p className="auth-app-name">CareAssist</p>
             <h3>Create account</h3>
-            <p>Start managing medication reminders for your family.</p>
+            <p>Start managing you and your family in one place.</p>
           </div>
           <button type="button" className="ghost-button" onClick={onGoToLogin}>
             Login
           </button>
         </div>
+
+        {error ? (
+          <p className="auth-inline-error" role="alert">
+            {error}
+          </p>
+        ) : null}
 
         <form
           className="form-grid auth-form"
@@ -111,12 +113,6 @@ export function RegisterScreen({
           </button>
         </form>
       </section>
-
-      <AuthErrorModal
-        title="Registration failed"
-        message={error && error.trim() ? error : undefined}
-        trigger={errorTrigger}
-      />
     </main>
   )
 }

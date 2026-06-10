@@ -2,11 +2,10 @@ import { DashboardHeroScreen } from '../screens/dashboard/DashboardHeroScreen'
 import { useCareAssistWorkspace } from '../context/CareAssistWorkspaceContext'
 
 export function DashboardPage() {
-  const { users, persons, medications, reminders, selectedUser, selectedPerson, selectedMedication } =
+  const { persons, medications, reminders, selectedUser, selectedPerson, selectedMedication } =
     useCareAssistWorkspace()
 
   const stats = [
-    { label: 'Users', value: users.length },
     { label: 'People', value: persons.length },
     { label: 'Meds', value: medications.length },
     { label: 'Today', value: reminders.length },
@@ -43,8 +42,8 @@ export function DashboardPage() {
           </div>
           <div className="stack">
             <div className="context-row">
-              <span>User</span>
-              <strong>{selectedUser?.name ?? 'No user selected'}</strong>
+              <span>Account</span>
+              <strong>{selectedUser?.name ?? 'No account selected'}</strong>
             </div>
             <div className="context-row">
               <span>Person</span>

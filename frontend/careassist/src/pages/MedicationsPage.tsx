@@ -1,5 +1,16 @@
+import { useEffect, useState } from 'react'
 import { AddScheduleForm, CreateMedicationForm } from '../components/forms/CareAssistForms'
 import { useCareAssistWorkspace } from '../context/CareAssistWorkspaceContext'
+
+type EditingSchedule = {
+  medicationId: number
+  scheduleId: number
+  scheduledTime: string
+}
+
+function formatTimeForInput(value: string) {
+  return value.trim().slice(0, 5)
+}
 
 export function MedicationsPage() {
   const {
@@ -13,12 +24,41 @@ export function MedicationsPage() {
     setSelectedMedicationId,
     createMedication,
     addSchedule,
+    updateSchedule,
     isCreatingMedication,
     isAddingSchedule,
+    isUpdatingSchedule,
     createMedicationError,
     addScheduleError,
+    updateScheduleError,
     medicationsLoading,
   } = useCareAssistWorkspace()
+  const [editingSchedule, setEditingSchedule] = useState<EditingSchedule | null>(null)
+
+  useEffect(() => {
+    setEditingSchedule(null)
+  }, [selectedMedicationId])
+
+  const handleStartEdit = (medicationId: number, scheduleId: number, scheduledTime: string) => {
+    setEditingSchedule({
+      medicationId,
+      scheduleId,
+      scheduledTime: formatTimeForInput(scheduledTime),
+    })
+  }
+
+  const handleSaveEdit = () => {
+    if (!editingSchedule) {
+      return
+    }
+
+    updateSchedule(
+      editingSchedule.medicationId,
+      editingSchedule.scheduleId,
+      editingSchedule.scheduledTime,
+    )
+    setEditingSchedule(null)
+  }
 
   return (
     <div className="page">
@@ -71,7 +111,7 @@ export function MedicationsPage() {
             </div>
 
             <div className="mini-summary">
-              <span>Current user</span>
+              <span>Current account</span>
               <strong>{selectedUser?.name ?? 'None'}</strong>
             </div>
           </article>
@@ -114,21 +154,95 @@ export function MedicationsPage() {
                       </button>
                     </div>
                     {medication.instructions ? <p className="muted">{medication.instructions}</p> : null}
-                    <div className="chips">
-                      {medication.schedules.length === 0 ? (
-                        <span className="chip">No schedules yet</span>
-                      ) : (
-                        medication.schedules.map((schedule) => (
-                          <span key={schedule.id} className="chip">
-                            {schedule.scheduledTime}
-                          </span>
-                        ))
-                      )}
+                    <div className="schedule-box">
+                      <p className="panel-kicker">Tap a time to edit it.</p>
+                      <div className="schedule-list">
+                        {medication.schedules.length === 0 ? (
+                          <span className="chip">No schedules yet</span>
+                        ) : (
+                          medication.schedules.map((schedule) => (
+                            <div key={schedule.id} className="schedule-row">
+                              {editingSchedule?.scheduleId === schedule.id ? (
+                                <>
+                                  <input
+                                    className="schedule-input"
+                                    type="time"
+                                    value={editingSchedule.scheduledTime}
+                                    onChange={(event) =>
+                                      setEditingSchedule((current) =>
+                                        current && current.scheduleId === schedule.id
+                                          ? {
+                                              ...current,
+                                              scheduledTime: event.target.value,
+                                            }
+                                          : current,
+                                      )
+                                    }
+                                  />
+                                  <div className="schedule-actions">
+                                    <button
+                                      type="button"
+                                      className="primary-button"
+                                      disabled={isUpdatingSchedule}
+                                      onClick={handleSaveEdit}
+                                    >
+                                      {isUpdatingSchedule ? 'Saving...' : 'Save'}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="ghost-button"
+                                      onClick={() => setEditingSchedule(null)}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="chip chip-button"
+                                    onClick={() =>
+                                      handleStartEdit(
+                                        medication.id,
+                                        schedule.id,
+                                        schedule.scheduledTime,
+                                      )
+                                    }
+                                  >
+                                    {schedule.scheduledTime}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="ghost-button schedule-edit-button"
+                                    onClick={() =>
+                                      handleStartEdit(
+                                        medication.id,
+                                        schedule.id,
+                                        schedule.scheduledTime,
+                                      )
+                                    }
+                                  >
+                                    Edit
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          ))
+                        )}
+                      </div>
                     </div>
                   </article>
                 ))}
               </div>
             )}
+            {updateScheduleError ? (
+              <p className="error-message">
+                {updateScheduleError instanceof Error
+                  ? updateScheduleError.message
+                  : 'Unable to update medication time'}
+              </p>
+            ) : null}
           </article>
         </div>
 

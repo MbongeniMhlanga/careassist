@@ -46,6 +46,8 @@ export const careAssistApi = {
     request<Medication>('/medications', 'POST', payload),
   addSchedule: (medicationId: number, payload: CreateSchedulePayload) =>
     request<MedicationSchedule>(`/medications/${medicationId}/schedules`, 'POST', payload),
+  updateSchedule: (medicationId: number, scheduleId: number, payload: CreateSchedulePayload) =>
+    request<MedicationSchedule>(`/medications/${medicationId}/schedules/${scheduleId}`, 'PUT', payload),
   listSchedules: (medicationId: number) =>
     request<MedicationSchedule[]>(`/medications/${medicationId}/schedules`),
   listTodayReminders: () => request<Reminder[]>('/reminders/today'),
@@ -150,6 +152,8 @@ export type CreateMedicationPayload = {
 export type CreateSchedulePayload = {
   scheduledTime: string
 }
+
+export type UpdateSchedulePayload = CreateSchedulePayload
 
 export type LoginPayload = {
   email: string

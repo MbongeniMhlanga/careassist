@@ -31,16 +31,19 @@ type CareAssistWorkspaceContextValue = {
   createPerson: (payload: CreatePersonPayload) => void
   createMedication: (payload: CreateMedicationPayload) => void
   addSchedule: (medicationId: number, scheduledTime: string) => void
+  updateSchedule: (medicationId: number, scheduleId: number, scheduledTime: string) => void
   markReminderTaken: (reminder: Reminder) => void
   isCreatingUser: boolean
   isCreatingPerson: boolean
   isCreatingMedication: boolean
   isAddingSchedule: boolean
+  isUpdatingSchedule: boolean
   isMarkingReminderTaken: boolean
   createUserError: unknown
   createPersonError: unknown
   createMedicationError: unknown
   addScheduleError: unknown
+  updateScheduleError: unknown
   usersLoading: boolean
   personsLoading: boolean
   medicationsLoading: boolean
@@ -163,6 +166,22 @@ export function CareAssistWorkspaceProvider({ children }: { children: ReactNode 
     },
   })
 
+  const updateScheduleMutation = useMutation({
+    mutationFn: ({
+      medicationId,
+      scheduleId,
+      scheduledTime,
+    }: {
+      medicationId: number
+      scheduleId: number
+      scheduledTime: string
+    }) => careAssistApi.updateSchedule(medicationId, scheduleId, { scheduledTime }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['medications'] })
+      await queryClient.invalidateQueries({ queryKey: careAssistQueryKeys.remindersToday })
+    },
+  })
+
   const markTakenMutation = useMutation({
     mutationFn: ({ reminderId, note }: { reminderId: number; note?: string }) =>
       careAssistApi.markReminderTaken(reminderId, note),
@@ -200,6 +219,8 @@ export function CareAssistWorkspaceProvider({ children }: { children: ReactNode 
     createMedication: (payload) => createMedicationMutation.mutate(payload),
     addSchedule: (medicationId, scheduledTime) =>
       addScheduleMutation.mutate({ medicationId, scheduledTime }),
+    updateSchedule: (medicationId, scheduleId, scheduledTime) =>
+      updateScheduleMutation.mutate({ medicationId, scheduleId, scheduledTime }),
     markReminderTaken: (reminder) => {
       if (reminder.id !== null) {
         markTakenMutation.mutate({
@@ -212,11 +233,13 @@ export function CareAssistWorkspaceProvider({ children }: { children: ReactNode 
     isCreatingPerson: createPersonMutation.isPending,
     isCreatingMedication: createMedicationMutation.isPending,
     isAddingSchedule: addScheduleMutation.isPending,
+    isUpdatingSchedule: updateScheduleMutation.isPending,
     isMarkingReminderTaken: markTakenMutation.isPending,
     createUserError: createUserMutation.error,
     createPersonError: createPersonMutation.error,
     createMedicationError: createMedicationMutation.error,
     addScheduleError: addScheduleMutation.error,
+    updateScheduleError: updateScheduleMutation.error,
     usersLoading: usersQuery.isLoading,
     personsLoading: personsQuery.isLoading,
     medicationsLoading: medicationsQuery.isLoading,

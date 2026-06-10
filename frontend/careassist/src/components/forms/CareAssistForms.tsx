@@ -161,7 +161,7 @@ export function CreateUserForm({ actionLabel, onSubmit, error }: CreateUserFormP
   return (
     <FormCard
       badge="01"
-      title="Create user"
+      title="Create account"
       subtitle="Start with the account holder."
       actionLabel={actionLabel}
       onSubmit={(formData) => {
@@ -226,14 +226,14 @@ export function CreatePersonForm({
         }))}
       />
       <SelectField
-        label="User"
+        label="Account"
         name="userId"
         options={users.map((user) => ({
           label: `${user.name} (${user.email})`,
           value: String(user.id),
         }))}
         fallbackValue={selectedUserId ? String(selectedUserId) : ''}
-        placeholder="Choose a user"
+        placeholder="Choose an account"
       />
       {error ? <FormError error={error} /> : null}
     </FormCard>

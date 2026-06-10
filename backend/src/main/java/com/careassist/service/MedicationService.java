@@ -65,6 +65,29 @@ public class MedicationService {
         return toScheduleResponse(medicationScheduleRepository.save(schedule));
     }
 
+    public MedicationScheduleResponse updateSchedule(
+            Long medicationId,
+            Long scheduleId,
+            AddMedicationScheduleRequest request
+    ) {
+        findEntityById(medicationId);
+
+        MedicationSchedule schedule = medicationScheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Schedule not found with id " + scheduleId + " for medication " + medicationId
+                ));
+
+        if (!schedule.getMedication().getId().equals(medicationId)) {
+            throw new ResourceNotFoundException(
+                    "Schedule not found with id " + scheduleId + " for medication " + medicationId
+            );
+        }
+
+        schedule.setScheduledTime(request.scheduledTime());
+
+        return toScheduleResponse(medicationScheduleRepository.save(schedule));
+    }
+
     @Transactional(readOnly = true)
     public MedicationResponse getById(Long medicationId) {
         Medication medication = findEntityById(medicationId);

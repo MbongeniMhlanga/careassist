@@ -24,7 +24,7 @@ export function AppRoutes() {
         >
           <Route index element={<Navigate to="/login" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="users" element={<RegisterPage />} />
+          <Route path="account" element={<RegisterPage />} />
           <Route path="people" element={<PeoplePage />} />
           <Route path="medications" element={<MedicationsPage />} />
           <Route path="reminders" element={<RemindersPage />} />

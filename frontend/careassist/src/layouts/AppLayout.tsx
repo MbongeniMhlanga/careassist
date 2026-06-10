@@ -3,7 +3,7 @@ import { useCareAssistWorkspace } from '../context/CareAssistWorkspaceContext'
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard' },
-  { to: '/users', label: 'Users' },
+  { to: '/account', label: 'Account' },
   { to: '/people', label: 'People' },
   { to: '/medications', label: 'Medications' },
   { to: '/reminders', label: 'Reminders' },
@@ -11,7 +11,7 @@ const navItems = [
 
 export function AppLayout() {
   const navigate = useNavigate()
-  const { users, persons, medications, reminders, selectedUser, selectedPerson } = useCareAssistWorkspace()
+  const { persons, medications, reminders, selectedUser } = useCareAssistWorkspace()
 
   return (
     <div className="app-shell">
@@ -41,10 +41,6 @@ export function AppLayout() {
           <h2>Current snapshot</h2>
           <div className="sidebar-metrics">
             <div>
-              <span>Users</span>
-              <strong>{users.length}</strong>
-            </div>
-            <div>
               <span>People</span>
               <strong>{persons.length}</strong>
             </div>
@@ -60,11 +56,8 @@ export function AppLayout() {
         </section>
 
         <section className="sidebar-panel sidebar-panel--accent">
-          <p className="eyebrow">Active selection</p>
-          <h2>{selectedUser?.name ?? 'No user selected'}</h2>
-          <p className="muted">
-            {selectedPerson?.name ?? 'No person selected'} is currently in focus.
-          </p>
+          <p className="eyebrow">Active User</p>
+          <h2>{selectedUser?.name ?? 'No account selected'}</h2>
           <button
             type="button"
             className="primary-button secondary"
@@ -82,8 +75,8 @@ export function AppLayout() {
             <h2>Less clutter. More care. One screen for each task.</h2>
           </div>
           <div className="workspace-badge">
-            <span className="status-badge sent">Backend live</span>
-            <span className="muted">TanStack Query is syncing the data</span>
+            <span className="status-badge sent">All systems ready</span>
+            <span className="muted">CareAssist keeps your data updated in the background.</span>
           </div>
         </header>
 

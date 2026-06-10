@@ -25,13 +25,13 @@ export function PeoplePage() {
             <p className="eyebrow">People</p>
             <h3>Manage the family members who actually take the medication.</h3>
             <p className="section-copy">
-              Pick a user, then add the people attached to that account. This screen keeps that
+              Pick an account, then add the people attached to it. This screen keeps that
               relationship focused instead of burying it in the dashboard.
             </p>
           </div>
           <div className="section-note">
-            <strong>Current user</strong>
-            <span>{selectedUser?.name ?? 'No user selected'}</span>
+            <strong>Current account</strong>
+            <span>{selectedUser?.name ?? 'No account selected'}</span>
           </div>
         </div>
 
@@ -47,8 +47,8 @@ export function PeoplePage() {
           <article className="panel page-panel">
             <div className="panel-header">
               <div>
-                <h3>Users</h3>
-                <p className="panel-kicker">Choose whose care circle you want to manage.</p>
+                <h3>Accounts</h3>
+                <p className="panel-kicker">Choose which care circle you want to manage.</p>
               </div>
               <span>{users.length}</span>
             </div>
@@ -68,7 +68,7 @@ export function PeoplePage() {
             </div>
 
             <div className="mini-summary">
-              <span>People attached to this user</span>
+              <span>People attached to this account</span>
               <strong>{selectedUserPeople.length}</strong>
             </div>
           </article>
@@ -78,7 +78,7 @@ export function PeoplePage() {
           <div className="panel-header">
             <div>
               <h3>People</h3>
-              <p className="panel-kicker">The current care circle for the selected user.</p>
+              <p className="panel-kicker">The current care circle for the selected account.</p>
             </div>
             <span>{selectedUserPeople.length}</span>
           </div>
@@ -87,7 +87,9 @@ export function PeoplePage() {
             <p className="empty">Loading people...</p>
           ) : selectedUserPeople.length === 0 ? (
             <p className="empty">
-              {selectedUser ? 'No people added for this user yet.' : 'Select a user to see people.'}
+              {selectedUser
+                ? 'No people added for this account yet.'
+                : 'Select an account to see people.'}
             </p>
           ) : (
             <div className="list">

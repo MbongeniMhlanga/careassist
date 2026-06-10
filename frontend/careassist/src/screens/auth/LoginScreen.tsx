@@ -1,39 +1,34 @@
-import { AuthErrorModal } from '../../components/AuthErrorModal'
-
 type LoginScreenProps = {
   onSubmit: (payload: { email: string; password: string }) => void
   onGoToRegister: () => void
   loading?: boolean
   error?: string
-  errorTrigger?: number
 }
 
-export function LoginScreen({ onSubmit, onGoToRegister, loading, error, errorTrigger }: LoginScreenProps) {
+export function LoginScreen({ onSubmit, onGoToRegister, loading, error }: LoginScreenProps) {
   return (
     <main className="auth-shell">
       <section className="auth-hero">
         <div className="auth-hero-copy">
           <p className="eyebrow">CareAssist</p>
-          <h1>One calm place for medication reminders on every device.</h1>
+          <h1>Medication tracking for reliable daily care.</h1>
           <p className="auth-lede">
-            Sign in to keep families, schedules, and daily reminders in one place.
+            Sign in to manage you and your family&apos;s medication schedules, dosage details, and
+            reminder logs in one system.
           </p>
-
-         
         </div>
 
         <div className="auth-hero-card">
           <div className="hero-card-top">
-            <p>Focus</p>
+            <p>CareAssist</p>
             <span className="status-badge sent">Live</span>
           </div>
-          <strong>Medication care that feels polished, not crowded.</strong>
+          <strong>Monitor medication times, dosage details, and reminder status with clarity.</strong>
           <span className="muted-on-dark">
-            Built for a comfortable reading width on large screens and a stacked layout on smaller
-            ones.
+            Built for consistent medication management across self care, parents, children, and
+            grandparents.
           </span>
           <div className="hero-card-footer">
-         
             <span className="hero-card-note">Login</span>
           </div>
         </div>
@@ -42,14 +37,17 @@ export function LoginScreen({ onSubmit, onGoToRegister, loading, error, errorTri
       <section className="auth-panel">
         <div className="form-heading auth-form-heading">
           <div>
-            <p className="form-badge">Login</p>
+            <p className="auth-app-name">CareAssist</p>
             <h3>Welcome back</h3>
-            <p>Sign in to manage medication reminders and family members.</p>
+            <p>Sign in to manage you and your family in one place.</p>
           </div>
-          <button type="button" className="ghost-button" onClick={onGoToRegister}>
-            Create account
-          </button>
         </div>
+
+        {error ? (
+          <p className="auth-inline-error" role="alert">
+            {error}
+          </p>
+        ) : null}
 
         <form
           className="form-grid auth-form"
@@ -82,12 +80,6 @@ export function LoginScreen({ onSubmit, onGoToRegister, loading, error, errorTri
           </button>
         </form>
       </section>
-
-      <AuthErrorModal
-        title="Login failed"
-        message={error && error.trim() ? error : undefined}
-        trigger={errorTrigger}
-      />
     </main>
   )
 }
