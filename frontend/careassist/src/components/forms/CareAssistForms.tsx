@@ -21,14 +21,25 @@ const relationshipOptions: RelationshipType[] = [
 
 type FormCardProps = {
   className?: string
+  badge?: string
   title: string
   subtitle: string
   actionLabel: string
+  submitDisabled?: boolean
   onSubmit: (formData: FormData) => void
   children: ReactNode
 }
 
-function FormCard({ className, title, subtitle, actionLabel, onSubmit, children }: FormCardProps) {
+function FormCard({
+  className,
+  badge,
+  title,
+  subtitle,
+  actionLabel,
+  submitDisabled,
+  onSubmit,
+  children,
+}: FormCardProps) {
   return (
     <form
       className={`form-card ${className ?? ''}`.trim()}
@@ -40,10 +51,11 @@ function FormCard({ className, title, subtitle, actionLabel, onSubmit, children 
     >
       <div className="form-heading">
         <div>
+          {badge ? <p className="form-badge">{badge}</p> : null}
           <h3>{title}</h3>
           <p>{subtitle}</p>
         </div>
-        <button type="submit" className="primary-button">
+        <button type="submit" className="primary-button" disabled={submitDisabled}>
           {actionLabel}
         </button>
       </div>
@@ -148,6 +160,7 @@ type CreateUserFormProps = {
 export function CreateUserForm({ actionLabel, onSubmit, error }: CreateUserFormProps) {
   return (
     <FormCard
+      badge="01"
       title="Create user"
       subtitle="Start with the account holder."
       actionLabel={actionLabel}
@@ -190,9 +203,11 @@ export function CreatePersonForm({
 }: CreatePersonFormProps) {
   return (
     <FormCard
+      badge="02"
       title="Create person"
       subtitle="Add yourself, a parent, or a child."
       actionLabel={actionLabel}
+      submitDisabled={users.length === 0}
       onSubmit={(formData) => {
         onSubmit({
           name: String(formData.get('name') ?? ''),
@@ -243,9 +258,11 @@ export function CreateMedicationForm({
   return (
     <FormCard
       className="panel-wide"
+      badge="03"
       title="Create medication"
       subtitle="Attach a medicine to a person and seed the first reminder times."
       actionLabel={actionLabel}
+      submitDisabled={persons.length === 0}
       onSubmit={(formData) => {
         const scheduleTimes = String(formData.get('scheduleTimes') ?? '')
           .split(',')
@@ -306,42 +323,31 @@ export function AddScheduleForm({
   onSubmit,
 }: AddScheduleFormProps) {
   return (
-    <form
-      className="form-card"
-      onSubmit={(event) => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
+    <FormCard
+      badge="04"
+      title="Add schedule"
+      subtitle="Create one more reminder time for an existing medication."
+      actionLabel={pending ? 'Saving...' : 'Add time'}
+      submitDisabled={medications.length === 0}
+      onSubmit={(formData) => {
         const medicationId = Number(String(formData.get('medicationId') ?? ''))
         const scheduledTime = normalizeLocalTime(String(formData.get('scheduledTime') ?? ''))
 
         onSubmit(medicationId, scheduledTime)
-        event.currentTarget.reset()
       }}
     >
-      <div className="form-heading">
-        <div>
-          <h3>Add schedule</h3>
-          <p>Create one more reminder time for an existing medication.</p>
-        </div>
-        <button type="submit" className="primary-button" disabled={medications.length === 0}>
-          {pending ? 'Saving...' : 'Add time'}
-        </button>
-      </div>
-
-      <div className="form-grid">
-        <SelectField
-          label="Medication"
-          name="medicationId"
-          options={medications.map((medication) => ({
-            label: `${medication.name} - ${medication.personName}`,
-            value: String(medication.id),
-          }))}
-          fallbackValue={selectedMedicationId ? String(selectedMedicationId) : ''}
-          placeholder="Choose a medication"
-        />
-        <TextField label="Time" name="scheduledTime" type="time" required />
-        {error ? <FormError error={error} /> : null}
-      </div>
-    </form>
+      <SelectField
+        label="Medication"
+        name="medicationId"
+        options={medications.map((medication) => ({
+          label: `${medication.name} - ${medication.personName}`,
+          value: String(medication.id),
+        }))}
+        fallbackValue={selectedMedicationId ? String(selectedMedicationId) : ''}
+        placeholder="Choose a medication"
+      />
+      <TextField label="Time" name="scheduledTime" type="time" required />
+      {error ? <FormError error={error} /> : null}
+    </FormCard>
   )
 }

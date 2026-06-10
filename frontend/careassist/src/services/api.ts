@@ -53,6 +53,11 @@ export const careAssistApi = {
     request<Reminder>(`/reminders/${reminderId}/taken`, 'POST', note ? { note } : {}),
 }
 
+export const authApi = {
+  login: (payload: LoginPayload) => request<User>('/auth/login', 'POST', payload),
+  register: (payload: RegisterPayload) => request<User>('/auth/register', 'POST', payload),
+}
+
 export const careAssistQueryKeys = {
   users: ['users'] as const,
   persons: (userId: number | null) => ['persons', userId ?? 'all'] as const,
@@ -144,4 +149,16 @@ export type CreateMedicationPayload = {
 
 export type CreateSchedulePayload = {
   scheduledTime: string
+}
+
+export type LoginPayload = {
+  email: string
+  password: string
+}
+
+export type RegisterPayload = {
+  name: string
+  email: string
+  password: string
+  confirmPassword: string
 }
