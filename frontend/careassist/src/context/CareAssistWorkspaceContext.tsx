@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   careAssistApi,
   careAssistQueryKeys,
@@ -24,6 +24,7 @@ type CareAssistWorkspaceContextValue = {
   selectedPerson: Person | null
   selectedMedication: Medication | null
   selectedUserPeople: Person[]
+  selectedUserMedications: Medication[]
   setSelectedUserId: (id: number | null) => void
   setSelectedPersonId: (id: number | null) => void
   setSelectedMedicationId: (id: number | null) => void
@@ -47,6 +48,7 @@ type CareAssistWorkspaceContextValue = {
   usersLoading: boolean
   personsLoading: boolean
   medicationsLoading: boolean
+  selectedUserMedicationsLoading: boolean
   remindersLoading: boolean
 }
 
@@ -85,6 +87,23 @@ export function CareAssistWorkspaceProvider({ children }: { children: ReactNode 
 
     return personsQuery.data.filter((person) => person.userId === selectedUserId)
   }, [personsQuery.data, selectedUserId])
+
+  const selectedUserMedicationQueries = useQueries({
+    queries: selectedUserPeople.map((person) => ({
+      queryKey: careAssistQueryKeys.medications(person.id),
+      queryFn: () => careAssistApi.listMedicationsForPerson(person.id),
+      enabled: selectedUserPeople.length > 0,
+    })),
+  })
+
+  const selectedUserMedications = useMemo(
+    () => selectedUserMedicationQueries.flatMap((query) => query.data ?? []),
+    [selectedUserMedicationQueries],
+  )
+
+  const selectedUserMedicationsLoading = selectedUserMedicationQueries.some(
+    (query) => query.isLoading || query.isFetching,
+  )
 
   const medicationsQuery = useQuery({
     queryKey: careAssistQueryKeys.medications(selectedPersonId),
@@ -211,6 +230,7 @@ export function CareAssistWorkspaceProvider({ children }: { children: ReactNode 
     selectedPerson,
     selectedMedication,
     selectedUserPeople,
+    selectedUserMedications,
     setSelectedUserId,
     setSelectedPersonId,
     setSelectedMedicationId,
@@ -243,6 +263,7 @@ export function CareAssistWorkspaceProvider({ children }: { children: ReactNode 
     usersLoading: usersQuery.isLoading,
     personsLoading: personsQuery.isLoading,
     medicationsLoading: medicationsQuery.isLoading,
+    selectedUserMedicationsLoading,
     remindersLoading: remindersQuery.isLoading,
   }
 

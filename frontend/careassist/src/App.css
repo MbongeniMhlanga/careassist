@@ -899,6 +899,88 @@
   line-height: 1.4;
 }
 
+.people-header-actions,
+.reminders-page-actions {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+}
+
+.people-card-list,
+.reminders-group-list {
+  display: grid;
+  gap: 14px;
+}
+
+.people-card,
+.reminders-group-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(23, 24, 29, 0.08);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(246, 252, 247, 0.96));
+  box-shadow: 0 12px 24px rgba(17, 43, 26, 0.06);
+}
+
+.people-card.active {
+  border-color: rgba(47, 143, 87, 0.24);
+  background: linear-gradient(180deg, rgba(232, 248, 234, 0.98), rgba(245, 252, 246, 0.98));
+}
+
+.people-card__top,
+.reminders-group-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.people-card__top strong,
+.reminders-group-card__header strong {
+  color: var(--ink);
+}
+
+.people-card__top p,
+.people-card__meta span,
+.people-card__footer span,
+.reminders-group-card__header p,
+.reminders-group-card__meta span {
+  margin: 0;
+  color: var(--muted);
+}
+
+.people-card__meta,
+.reminders-group-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.people-card__footer,
+.reminders-group-card__footer {
+  display: grid;
+  gap: 10px;
+}
+
+.people-card__actions,
+.reminders-group-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.reminders-group-card__actions {
+  align-items: center;
+}
+
+.reminders-panel--single {
+  display: grid;
+  gap: 16px;
+}
+
 .reminders-workflow {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
@@ -1400,6 +1482,11 @@
     grid-column: auto;
   }
 
+  .people-header-actions,
+  .reminders-page-actions {
+    justify-items: stretch;
+  }
+
   .workspace-topbar {
     flex-direction: column;
     align-items: flex-start;
@@ -1446,8 +1533,18 @@
   .form-heading,
   .medication-top,
   .reminder-top,
+  .people-card__top,
+  .reminders-group-card__header,
   .hero-card-top,
   .hero-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .people-card__meta,
+  .reminders-group-card__meta,
+  .people-card__actions,
+  .reminders-group-card__actions {
     flex-direction: column;
     align-items: flex-start;
   }

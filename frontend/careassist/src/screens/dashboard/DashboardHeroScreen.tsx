@@ -3,18 +3,17 @@ export function DashboardHeroScreen() {
     <header className="hero">
       <div className="hero-copy">
         <p className="eyebrow">CareAssist</p>
-        <h2>Build reminders for people, not just medicines.</h2>
+        <h2>See who needs a dose, what it is, and when it is due.</h2>
         <p className="lede">
-          Create an account, assign family members, add medications, attach reminder times, and
-          mark doses as taken from one dashboard.
+          Choose a person, review only their medication reminders, and mark a dose complete
+          without digging through a crowded list.
         </p>
         <div className="hero-pills">
-          <span className="status-chip">Families</span>
-          <span className="status-chip">Schedules</span>
-          <span className="status-chip">Reminders</span>
+          <span className="status-chip">People first</span>
+          <span className="status-chip">Due today</span>
+          <span className="status-chip">Mark taken</span>
         </div>
       </div>
-    
     </header>
   )
 }

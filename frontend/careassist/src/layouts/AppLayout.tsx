@@ -6,12 +6,17 @@ const navItems = [
   { to: '/account', label: 'Account' },
   { to: '/people', label: 'People' },
   { to: '/medications', label: 'Medications' },
-  { to: '/reminders', label: 'Reminders' },
+  { to: '/reminders?scope=all', label: 'Reminders' },
 ] as const
 
 export function AppLayout() {
   const navigate = useNavigate()
-  const { persons, medications, reminders, selectedUser } = useCareAssistWorkspace()
+  const { selectedUser, selectedUserPeople, selectedUserMedications, reminders } =
+    useCareAssistWorkspace()
+
+  const selectedUserReminderCount = reminders.filter((reminder) =>
+    selectedUserPeople.some((person) => person.id === reminder.personId),
+  ).length
 
   return (
     <div className="app-shell">
@@ -42,15 +47,15 @@ export function AppLayout() {
           <div className="sidebar-metrics">
             <div>
               <span>People</span>
-              <strong>{persons.length}</strong>
+              <strong>{selectedUserPeople.length}</strong>
             </div>
             <div>
               <span>Meds</span>
-              <strong>{medications.length}</strong>
+              <strong>{selectedUserMedications.length}</strong>
             </div>
             <div>
               <span>Today</span>
-              <strong>{reminders.length}</strong>
+              <strong>{selectedUserReminderCount}</strong>
             </div>
           </div>
         </section>

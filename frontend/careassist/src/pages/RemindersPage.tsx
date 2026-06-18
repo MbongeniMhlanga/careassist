@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useCareAssistWorkspace } from '../context/CareAssistWorkspaceContext'
 
 const statusLabels = {
@@ -22,9 +24,10 @@ function formatTime(value: string) {
 }
 
 export function RemindersPage() {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const {
     selectedUser,
-    selectedPerson,
     selectedPersonId,
     selectedUserPeople,
     reminders,
@@ -32,6 +35,21 @@ export function RemindersPage() {
     setSelectedPersonId,
     markReminderTaken,
   } = useCareAssistWorkspace()
+
+  const personIdParam = searchParams.get('personId')
+  const scopeParam = searchParams.get('scope')
+  const focusPersonId = personIdParam ? Number(personIdParam) : null
+  const hasValidFocusPerson = Number.isFinite(focusPersonId) && focusPersonId !== null
+  const focusPerson = hasValidFocusPerson
+    ? selectedUserPeople.find((person) => person.id === focusPersonId) ?? null
+    : null
+  const showAllReminders = scopeParam === 'all' || !focusPerson
+
+  useEffect(() => {
+    if (focusPerson && selectedPersonId !== focusPerson.id) {
+      setSelectedPersonId(focusPerson.id)
+    }
+  }, [focusPerson, selectedPersonId, setSelectedPersonId])
 
   const visibleReminders = reminders.filter((reminder) =>
     selectedUserPeople.some((person) => person.id === reminder.personId),
@@ -52,14 +70,14 @@ export function RemindersPage() {
     })
     .filter(({ reminders: personReminders }) => personReminders.length > 0)
 
-  const selectedPersonReminders = selectedPerson
-    ? visibleReminders
-        .filter((reminder) => reminder.personId === selectedPerson.id)
+  const activeReminders = showAllReminders
+    ? visibleReminders.slice().sort((left, right) => new Date(left.dueAt).getTime() - new Date(right.dueAt).getTime())
+    : visibleReminders
+        .filter((reminder) => reminder.personId === focusPerson?.id)
         .slice()
         .sort((left, right) => new Date(left.dueAt).getTime() - new Date(right.dueAt).getTime())
-    : []
 
-  const statusCounts: Record<'PENDING' | 'SENT' | 'TAKEN' | 'MISSED', number> = visibleReminders.reduce(
+  const statusCounts: Record<'PENDING' | 'SENT' | 'TAKEN' | 'MISSED', number> = activeReminders.reduce(
     (counts, reminder) => {
       counts[reminder.status] += 1
       return counts
@@ -73,6 +91,13 @@ export function RemindersPage() {
   )
 
   const pendingReminders = statusCounts.PENDING
+  const peopleCount = showAllReminders ? remindersByPerson.length : focusPerson ? 1 : 0
+  const pageTitle = showAllReminders
+    ? `All reminders for ${selectedUser?.name ?? 'this account'}`
+    : `${focusPerson?.name ?? 'Selected person'}'s reminders`
+  const pageCopy = showAllReminders
+    ? 'Review everyone attached to this account in one clean reminders screen.'
+    : 'Medication reminders, due times, and quick actions for this person.'
 
   return (
     <div className="page reminders-page">
@@ -80,17 +105,35 @@ export function RemindersPage() {
         <div className="section-intro">
           <div>
             <p className="eyebrow">Reminders</p>
-            <h3>Pick a person, then scan only the medication reminders that belong to them.</h3>
-            <p className="section-copy">
-              This page is designed for caregiving moments. The left side helps you choose the
-              person, and the right side shows their reminder timeline without clutter.
-            </p>
+            <h3>{pageTitle}</h3>
+            <p className="section-copy">{pageCopy}</p>
           </div>
-          <div className="status-strip status-strip--compact">
-            <span className="status-chip">Pending {pendingReminders}</span>
-            <span className="status-chip">Taken {statusCounts.TAKEN}</span>
-            <span className="status-chip">Missed {statusCounts.MISSED}</span>
-            <span className="status-chip">{selectedUser?.name ?? 'Account'}</span>
+
+          <div className="reminders-page-actions">
+            <div className="status-strip status-strip--compact">
+              <span className="status-chip">Pending {pendingReminders}</span>
+              <span className="status-chip">Taken {statusCounts.TAKEN}</span>
+              <span className="status-chip">Missed {statusCounts.MISSED}</span>
+              <span className="status-chip">{selectedUser?.name ?? 'Account'}</span>
+            </div>
+
+            {showAllReminders ? (
+              <button
+                type="button"
+                className="primary-button secondary"
+                onClick={() => navigate('/people')}
+              >
+                Pick a person
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="primary-button secondary"
+                onClick={() => navigate('/reminders?scope=all')}
+              >
+                Show all reminders
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -98,8 +141,8 @@ export function RemindersPage() {
       <section className="reminders-summary-grid">
         <article className="panel reminders-summary-card">
           <p className="eyebrow">People with reminders</p>
-          <strong>{remindersByPerson.length}</strong>
-          <span>need medication today</span>
+          <strong>{peopleCount}</strong>
+          <span>{showAllReminders ? 'need medication today' : 'focused person only'}</span>
         </article>
         <article className="panel reminders-summary-card">
           <p className="eyebrow">Pending</p>
@@ -118,146 +161,149 @@ export function RemindersPage() {
         </article>
       </section>
 
-      <section className="reminders-workflow">
-        <article className="panel reminders-panel">
-          <div className="panel-header">
-            <div>
-              <h3>Who needs medication?</h3>
-              <p className="panel-kicker">
-                Select a person to reveal their reminders and keep the task focused.
-              </p>
-            </div>
-            <span>{remindersByPerson.length}</span>
+      <section className="panel reminders-panel reminders-panel--single">
+        <div className="panel-header">
+          <div>
+            <h3>{showAllReminders ? 'All reminders' : `${focusPerson?.name ?? 'Person'} reminders`}</h3>
+            <p className="panel-kicker">
+              {showAllReminders
+                ? 'Grouped by person so you can scan the whole care circle without switching pages.'
+                : 'Focused reminders for one person, with a quick action for each dose.'}
+            </p>
           </div>
+          <span>{activeReminders.length}</span>
+        </div>
 
-          {remindersLoading ? (
-            <p className="empty">Loading reminders...</p>
-          ) : remindersByPerson.length === 0 ? (
-            <div className="reminders-empty">
-              <strong>No reminders yet</strong>
-              <span>Add medication schedules from the Medications screen, then come back here to
-                manage the day.</span>
-            </div>
-          ) : (
-            <div className="reminder-person-list">
-              {remindersByPerson.map(({ person, reminders: personReminders, nextReminder: personNextReminder }) => {
-                const isActive = selectedPersonId === person.id
-
-                return (
-                  <button
-                    key={person.id}
-                    type="button"
-                    className={`reminder-person-card ${isActive ? 'active' : ''}`}
-                    onClick={() => setSelectedPersonId(person.id)}
-                  >
-                    <div className="reminder-person-card__top">
-                      <div>
-                        <strong>{person.name}</strong>
-                        <p>{person.relationshipType}</p>
-                      </div>
-                      <span className="reminder-person-card__badge">{personReminders.length} due</span>
-                    </div>
-
-                    <div className="reminder-person-card__meta">
-                      <span>{person.userName}</span>
-                      <span>{person.userEmail}</span>
-                    </div>
-
-                    <div className="reminder-person-card__footer">
-                      {personNextReminder ? (
-                        <>
-                          <span>Next at {formatTime(personNextReminder.dueAt)}</span>
-                          <strong>{personNextReminder.medicationName}</strong>
-                        </>
-                      ) : (
-                        <>
-                          <span>No upcoming reminder</span>
-                          <strong>Schedule a medication time</strong>
-                        </>
-                      )}
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
-          )}
-        </article>
-
-        <article className="panel reminders-panel reminders-panel--details">
-          <div className="panel-header">
-            <div>
-              <h3>
-                {selectedPerson ? `${selectedPerson.name}'s reminders` : 'Selected person reminders'}
-              </h3>
-              <p className="panel-kicker">
-                {selectedPerson
-                  ? 'Medication reminders, due times, and quick actions for this person.'
-                  : 'Select a person on the left to see their medication timeline.'}
-              </p>
-            </div>
-            <span>{selectedPersonReminders.length}</span>
+        {remindersLoading ? (
+          <p className="empty">Loading reminders...</p>
+        ) : activeReminders.length === 0 ? (
+          <div className="reminders-empty">
+            <strong>No reminders yet</strong>
+            <span>
+              {showAllReminders
+                ? 'Add medication schedules from the Medications screen, then return here to manage the day.'
+                : 'This person has no reminders yet. Use the view all button to scan the full care circle.'}
+            </span>
           </div>
-
-          {selectedPerson ? (
-            <div className="selected-person-summary">
-              <div>
-                <p className="eyebrow">Focus</p>
-                <strong>{selectedPerson.name}</strong>
-              </div>
-              <div>
-                <p className="eyebrow">Account</p>
-                <strong>{selectedUser?.name ?? selectedPerson.userName}</strong>
-              </div>
-            </div>
-          ) : null}
-
-          {selectedPersonReminders.length === 0 ? (
-            <div className="reminders-empty">
-              <strong>
-                {selectedPerson ? 'No reminders scheduled yet for this person.' : 'Choose a person to begin.'}
-              </strong>
-              <span>
-                {selectedPerson
-                  ? 'Add a medication schedule to make this reminder timeline useful.'
-                  : 'The reminder timeline appears here once a person is selected.'}
-              </span>
-            </div>
-          ) : (
-            <div className="reminder-timeline">
-              {selectedPersonReminders.map((reminder) => (
-                <article key={`${reminder.scheduleId}-${reminder.dueAt}`} className="reminder-card">
-                  <div className="reminder-top">
-                    <div>
-                      <strong>{reminder.medicationName}</strong>
-                      <p>
-                        {reminder.dosageAmount} {reminder.dosageUnit}
-                      </p>
-                    </div>
-                    <span className={`status-badge ${statusTone[reminder.status]}`}>
-                      {statusLabels[reminder.status]}
-                    </span>
+        ) : showAllReminders ? (
+          <div className="reminders-group-list">
+            {remindersByPerson.map(({ person, reminders: personReminders, nextReminder }) => (
+              <article key={person.id} className="reminders-group-card">
+                <div className="reminders-group-card__header">
+                  <div>
+                    <strong>{person.name}</strong>
+                    <p>
+                      {person.relationshipType} - {person.userName}
+                    </p>
                   </div>
-
-                  <div className="reminder-card__meta">
-                    <span>Due at {formatTime(reminder.dueAt)}</span>
-                    {reminder.instructions ? <span>{reminder.instructions}</span> : null}
-                    {reminder.status !== 'TAKEN' ? <span>Tap mark taken once the dose is complete.</span> : null}
-                  </div>
-
-                  {reminder.status !== 'TAKEN' && reminder.id !== null ? (
+                  <div className="reminders-group-card__actions">
+                    <span className="reminder-person-card__badge">{personReminders.length} due</span>
                     <button
                       type="button"
-                      className="primary-button secondary"
-                      onClick={() => markReminderTaken(reminder)}
+                      className="ghost-button"
+                      onClick={() => navigate(`/reminders?personId=${person.id}`)}
                     >
-                      Mark taken
+                      Open
                     </button>
-                  ) : null}
-                </article>
-              ))}
+                  </div>
+                </div>
+
+                <div className="reminders-group-card__meta">
+                  {nextReminder ? (
+                    <span>Next at {formatTime(nextReminder.dueAt)}: {nextReminder.medicationName}</span>
+                  ) : (
+                    <span>No upcoming reminder</span>
+                  )}
+                </div>
+
+                <div className="reminder-timeline">
+                  {personReminders.map((reminder) => (
+                    <article key={`${reminder.scheduleId}-${reminder.dueAt}`} className="reminder-card">
+                      <div className="reminder-top">
+                        <div>
+                          <strong>{reminder.medicationName}</strong>
+                          <p>
+                            {reminder.dosageAmount} {reminder.dosageUnit}
+                          </p>
+                        </div>
+                        <span className={`status-badge ${statusTone[reminder.status]}`}>
+                          {statusLabels[reminder.status]}
+                        </span>
+                      </div>
+
+                      <div className="reminder-card__meta">
+                        <span>Due at {formatTime(reminder.dueAt)}</span>
+                        {reminder.instructions ? <span>{reminder.instructions}</span> : null}
+                        {reminder.status !== 'TAKEN' ? (
+                          <span>Tap mark taken once the dose is complete.</span>
+                        ) : null}
+                      </div>
+
+                      {reminder.status !== 'TAKEN' && reminder.id !== null ? (
+                        <button
+                          type="button"
+                          className="primary-button secondary"
+                          onClick={() => markReminderTaken(reminder)}
+                        >
+                          Mark taken
+                        </button>
+                      ) : null}
+                    </article>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="selected-person-summary selected-person-summary--stacked">
+            <div>
+              <p className="eyebrow">Focus</p>
+              <strong>{focusPerson?.name ?? 'Selected person'}</strong>
             </div>
-          )}
-        </article>
+            <div>
+              <p className="eyebrow">Account</p>
+              <strong>{selectedUser?.name ?? focusPerson?.userName}</strong>
+            </div>
+          </div>
+        )}
+
+        {!showAllReminders && activeReminders.length > 0 ? (
+          <div className="reminder-timeline">
+            {activeReminders.map((reminder) => (
+              <article key={`${reminder.scheduleId}-${reminder.dueAt}`} className="reminder-card">
+                <div className="reminder-top">
+                  <div>
+                    <strong>{reminder.medicationName}</strong>
+                    <p>
+                      {reminder.dosageAmount} {reminder.dosageUnit}
+                    </p>
+                  </div>
+                  <span className={`status-badge ${statusTone[reminder.status]}`}>
+                    {statusLabels[reminder.status]}
+                  </span>
+                </div>
+
+                <div className="reminder-card__meta">
+                  <span>Due at {formatTime(reminder.dueAt)}</span>
+                  {reminder.instructions ? <span>{reminder.instructions}</span> : null}
+                  {reminder.status !== 'TAKEN' ? (
+                    <span>Tap mark taken once the dose is complete.</span>
+                  ) : null}
+                </div>
+
+                {reminder.status !== 'TAKEN' && reminder.id !== null ? (
+                  <button
+                    type="button"
+                    className="primary-button secondary"
+                    onClick={() => markReminderTaken(reminder)}
+                  >
+                    Mark taken
+                  </button>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        ) : null}
       </section>
     </div>
   )

@@ -1,7 +1,9 @@
 import { CreatePersonForm } from '../components/forms/CareAssistForms'
 import { useCareAssistWorkspace } from '../context/CareAssistWorkspaceContext'
+import { useNavigate } from 'react-router-dom'
 
 export function PeoplePage() {
+  const navigate = useNavigate()
   const {
     users,
     selectedUserId,
@@ -25,13 +27,22 @@ export function PeoplePage() {
             <p className="eyebrow">People</p>
             <h3>Manage the family members who actually take the medication.</h3>
             <p className="section-copy">
-              Pick an account, then add the people attached to it. This screen keeps that
-              relationship focused instead of burying it in the dashboard.
+              Pick an account, add the people attached to it, then open reminders for anyone
+              directly from here.
             </p>
           </div>
-          <div className="section-note">
-            <strong>Current account</strong>
-            <span>{selectedUser?.name ?? 'No account selected'}</span>
+          <div className="people-header-actions">
+            <div className="section-note">
+              <strong>Current account</strong>
+              <span>{selectedUser?.name ?? 'No account selected'}</span>
+            </div>
+            <button
+              type="button"
+              className="primary-button secondary"
+              onClick={() => navigate('/reminders?scope=all')}
+            >
+              View all reminders
+            </button>
           </div>
         </div>
 
@@ -78,7 +89,9 @@ export function PeoplePage() {
           <div className="panel-header">
             <div>
               <h3>People</h3>
-              <p className="panel-kicker">The current care circle for the selected account.</p>
+              <p className="panel-kicker">
+                Tap a person to open that person&apos;s reminders screen.
+              </p>
             </div>
             <span>{selectedUserPeople.length}</span>
           </div>
@@ -92,20 +105,39 @@ export function PeoplePage() {
                 : 'Select an account to see people.'}
             </p>
           ) : (
-            <div className="list">
+            <div className="people-card-list">
               {selectedUserPeople.map((person) => (
-                <button
+                <article
                   key={person.id}
-                  type="button"
-                  className={`list-item ${selectedPersonId === person.id ? 'active' : ''}`}
-                  onClick={() => setSelectedPersonId(person.id)}
+                  className={`people-card ${selectedPersonId === person.id ? 'active' : ''}`}
                 >
-                  <strong>{person.name}</strong>
-                  <span>{person.relationshipType}</span>
-                  <small>
-                    {person.userName} - {person.userEmail}
-                  </small>
-                </button>
+                  <div className="people-card__top">
+                    <div>
+                      <strong>{person.name}</strong>
+                      <p>{person.relationshipType}</p>
+                    </div>
+                    <span className="person-card__badge">Care member</span>
+                  </div>
+                  <div className="people-card__meta">
+                    <span>{person.userName}</span>
+                    <span>{person.userEmail}</span>
+                  </div>
+                  <div className="people-card__footer">
+                    <span>Open that person&apos;s reminders in a focused screen.</span>
+                    <div className="people-card__actions">
+                      <button
+                        type="button"
+                        className="ghost-button"
+                        onClick={() => {
+                          setSelectedPersonId(person.id)
+                          navigate(`/reminders?personId=${person.id}`)
+                        }}
+                      >
+                        View reminders
+                      </button>
+                    </div>
+                  </div>
+                </article>
               ))}
             </div>
           )}
