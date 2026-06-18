@@ -875,6 +875,14 @@
   gap: 24px;
 }
 
+.reminders-page .section-intro {
+  align-items: flex-start;
+}
+
+.reminders-page .section-intro > div:first-child {
+  padding-top: 4px;
+}
+
 .reminders-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -910,6 +918,34 @@
 .reminders-group-list {
   display: grid;
   gap: 14px;
+}
+
+.reminder-name-list {
+  display: grid;
+  gap: 10px;
+}
+
+.reminder-name-item {
+  width: 100%;
+  min-height: 60px;
+  padding: 0 18px;
+  border: 1px solid rgba(23, 24, 29, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  text-align: left;
+  color: var(--ink);
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(17, 43, 26, 0.05);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease,
+    background 160ms ease;
+}
+
+.reminder-name-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(47, 143, 87, 0.24);
+  background: rgba(232, 248, 234, 0.82);
+  box-shadow: 0 16px 26px rgba(47, 143, 87, 0.08);
 }
 
 .people-card,

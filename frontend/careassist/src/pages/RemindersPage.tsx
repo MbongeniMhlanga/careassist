@@ -178,72 +178,16 @@ export function RemindersPage() {
             </span>
           </div>
         ) : showAllReminders ? (
-          <div className="reminders-group-list">
-            {remindersByPerson.map(({ person, reminders: personReminders, nextReminder }) => (
-              <article key={person.id} className="reminders-group-card">
-                <div className="reminders-group-card__header">
-                  <div>
-                    <strong>{person.name}</strong>
-                    <p>
-                      {person.relationshipType} - {person.userName}
-                    </p>
-                  </div>
-                  <div className="reminders-group-card__actions">
-                    <span className="reminder-person-card__badge">{personReminders.length} due</span>
-                    <button
-                      type="button"
-                      className="ghost-button"
-                      onClick={() => navigate(`/reminders?personId=${person.id}`)}
-                    >
-                      Open
-                    </button>
-                  </div>
-                </div>
-
-                <div className="reminders-group-card__meta">
-                  {nextReminder ? (
-                    <span>Next at {formatTime(nextReminder.dueAt)}: {nextReminder.medicationName}</span>
-                  ) : (
-                    <span>No upcoming reminder</span>
-                  )}
-                </div>
-
-                <div className="reminder-timeline">
-                  {personReminders.map((reminder) => (
-                    <article key={`${reminder.scheduleId}-${reminder.dueAt}`} className="reminder-card">
-                      <div className="reminder-top">
-                        <div>
-                          <strong>{reminder.medicationName}</strong>
-                          <p>
-                            {reminder.dosageAmount} {reminder.dosageUnit}
-                          </p>
-                        </div>
-                        <span className={`status-badge ${statusTone[reminder.status]}`}>
-                          {statusLabels[reminder.status]}
-                        </span>
-                      </div>
-
-                      <div className="reminder-card__meta">
-                        <span>Due at {formatTime(reminder.dueAt)}</span>
-                        {reminder.instructions ? <span>{reminder.instructions}</span> : null}
-                        {reminder.status !== 'TAKEN' ? (
-                          <span>Tap mark taken once the dose is complete.</span>
-                        ) : null}
-                      </div>
-
-                      {reminder.status !== 'TAKEN' && reminder.id !== null ? (
-                        <button
-                          type="button"
-                          className="primary-button secondary"
-                          onClick={() => markReminderTaken(reminder)}
-                        >
-                          Mark taken
-                        </button>
-                      ) : null}
-                    </article>
-                  ))}
-                </div>
-              </article>
+          <div className="reminder-name-list">
+            {remindersByPerson.map(({ person }) => (
+              <button
+                key={person.id}
+                type="button"
+                className="reminder-name-item"
+                onClick={() => navigate(`/reminders?personId=${person.id}`)}
+              >
+                <strong>{person.name}</strong>
+              </button>
             ))}
           </div>
         ) : (
