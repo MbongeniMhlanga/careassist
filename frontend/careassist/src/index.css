@@ -4,9 +4,9 @@
   font-weight: 400;
   color: #17181d;
   background:
-    radial-gradient(circle at top left, rgba(255, 154, 98, 0.16), transparent 24%),
-    radial-gradient(circle at bottom right, rgba(108, 117, 255, 0.12), transparent 20%),
-    linear-gradient(180deg, #f4ede4 0%, #efe7d9 100%);
+    radial-gradient(circle at top left, rgba(127, 214, 143, 0.16), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(77, 143, 106, 0.12), transparent 20%),
+    linear-gradient(180deg, #edf7ee 0%, #e0f0e3 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -41,6 +41,6 @@ a {
 }
 
 ::selection {
-  background: rgba(229, 109, 121, 0.18);
+  background: rgba(47, 143, 87, 0.18);
   color: #11131a;
 }
