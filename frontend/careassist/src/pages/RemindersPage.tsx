@@ -117,15 +117,7 @@ export function RemindersPage() {
               <span className="status-chip">{selectedUser?.name ?? 'Account'}</span>
             </div>
 
-            {showAllReminders ? (
-              <button
-                type="button"
-                className="primary-button secondary"
-                onClick={() => navigate('/people')}
-              >
-                Pick a person
-              </button>
-            ) : (
+            {!showAllReminders ? (
               <button
                 type="button"
                 className="primary-button secondary"
@@ -133,7 +125,7 @@ export function RemindersPage() {
               >
                 Show all reminders
               </button>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
