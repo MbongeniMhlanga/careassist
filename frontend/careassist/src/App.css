@@ -871,6 +871,173 @@
   gap: 20px;
 }
 
+.reminders-page {
+  gap: 24px;
+}
+
+.reminders-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.reminders-summary-card {
+  display: grid;
+  gap: 6px;
+  padding: 18px 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(246, 252, 247, 0.94));
+}
+
+.reminders-summary-card strong {
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.reminders-summary-card span {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.reminders-workflow {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 18px;
+}
+
+.reminders-panel {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.reminders-panel--details {
+  min-height: 100%;
+}
+
+.reminder-person-list {
+  display: grid;
+  gap: 12px;
+}
+
+.reminder-person-card {
+  width: 100%;
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid rgba(23, 24, 29, 0.08);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(246, 252, 247, 0.95));
+  box-shadow: 0 12px 24px rgba(17, 43, 26, 0.06);
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease,
+    background 160ms ease;
+}
+
+.reminder-person-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 30px rgba(17, 43, 26, 0.09);
+}
+
+.reminder-person-card.active {
+  border-color: rgba(47, 143, 87, 0.24);
+  background: linear-gradient(180deg, rgba(232, 248, 234, 0.98), rgba(245, 252, 246, 0.98));
+  box-shadow: 0 16px 30px rgba(47, 143, 87, 0.12);
+}
+
+.reminder-person-card__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.reminder-person-card__top strong,
+.reminder-person-card__footer strong {
+  display: block;
+  color: var(--ink);
+}
+
+.reminder-person-card__top p,
+.reminder-person-card__meta span,
+.reminder-person-card__footer span {
+  margin: 0;
+  color: var(--muted);
+}
+
+.reminder-person-card__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(47, 143, 87, 0.12);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.reminder-person-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+}
+
+.reminder-person-card__footer {
+  display: grid;
+  gap: 3px;
+}
+
+.selected-person-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(23, 24, 29, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.selected-person-summary strong {
+  color: var(--ink);
+}
+
+.reminder-timeline {
+  display: grid;
+  gap: 14px;
+}
+
+.reminder-card {
+  display: grid;
+  gap: 12px;
+}
+
+.reminder-card__meta {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.reminders-empty {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px dashed rgba(23, 24, 29, 0.12);
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.reminders-empty strong {
+  color: var(--ink);
+}
+
 .page-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1219,7 +1386,13 @@
   }
 
   .page-grid,
-  .dashboard-metrics {
+  .dashboard-metrics,
+  .reminders-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reminders-workflow,
+  .selected-person-summary {
     grid-template-columns: 1fr;
   }
 

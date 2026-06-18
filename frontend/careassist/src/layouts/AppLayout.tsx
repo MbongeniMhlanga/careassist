@@ -69,17 +69,6 @@ export function AppLayout() {
       </aside>
 
       <div className="workspace">
-        <header className="workspace-topbar">
-          <div>
-            <p className="eyebrow">CareAssist workspace</p>
-            <h2>Less clutter. More care. One screen for each task.</h2>
-          </div>
-          <div className="workspace-badge">
-            <span className="status-badge sent">All systems ready</span>
-            <span className="muted">CareAssist keeps your data updated in the background.</span>
-          </div>
-        </header>
-
         <main className="workspace-body">
           <Outlet />
         </main>
