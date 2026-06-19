@@ -872,7 +872,8 @@
 }
 
 .reminders-page {
-  gap: 24px;
+  gap: 12px;
+  align-content: start;
 }
 
 .reminders-page .section-intro {
@@ -880,13 +881,18 @@
 }
 
 .reminders-page .section-intro > div:first-child {
-  padding-top: 4px;
+  padding-top: 0;
+}
+
+.reminders-page .section-block {
+  gap: 8px;
 }
 
 .reminders-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
+  margin-top: 0;
 }
 
 .reminders-summary-card {
@@ -1015,6 +1021,7 @@
 .reminders-panel--single {
   display: grid;
   gap: 16px;
+  margin-top: 0;
 }
 
 .reminders-workflow {
