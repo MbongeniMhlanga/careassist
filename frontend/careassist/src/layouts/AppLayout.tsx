@@ -43,7 +43,7 @@ export function AppLayout() {
 
         <section className="sidebar-panel">
           <p className="eyebrow">Workspace</p>
-          <h2>Current snapshot</h2>
+          <h2>Overall Summary</h2>
           <div className="sidebar-metrics">
             <div>
               <span>People</span>

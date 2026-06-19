@@ -199,7 +199,7 @@
 .hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  grid-template-columns: 1fr;
   gap: 20px;
   align-items: stretch;
   padding: 28px;
@@ -234,9 +234,9 @@
 
 .hero h2 {
   margin: 0;
-  max-width: 12ch;
-  font-size: clamp(2.5rem, 4vw, 4.9rem);
-  line-height: 0.92;
+  max-width: 48ch;
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+  line-height: 1.1;
   color: var(--ink);
 }
 
