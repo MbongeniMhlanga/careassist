@@ -7,10 +7,10 @@ export function RegisterPage() {
   return (
     <div className="page page-auth">
       <section className="panel page-panel page-panel--hero">
-        <p className="eyebrow">Register</p>
-        <h3>Create the account holder first.</h3>
+        <p className="eyebrow">Account</p>
+        <h3>Update the account holder.</h3>
         <p className="section-copy">
-          Every care plan starts with an account. Once it exists, you can attach people,
+          Manage the primary account holder details. You can attach people,
           medications, and reminder schedules from the other screens.
         </p>
         <div className="section-note">
@@ -22,6 +22,10 @@ export function RegisterPage() {
       <CreateUserForm
         actionLabel={isCreatingUser ? 'Saving...' : 'Save account'}
         onSubmit={createUser}
+        defaultValues={{
+          name: selectedUser?.name,
+          email: selectedUser?.email,
+        }}
         error={createUserError}
       />
     </div>

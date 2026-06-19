@@ -876,6 +876,10 @@
   align-content: start;
 }
 
+.page-auth {
+  align-content: start;
+}
+
 .reminders-page .section-intro {
   align-items: flex-start;
 }

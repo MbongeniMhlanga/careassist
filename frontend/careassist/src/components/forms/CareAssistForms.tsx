@@ -155,14 +155,18 @@ type CreateUserFormProps = {
   actionLabel: string
   onSubmit: (payload: CreateUserPayload) => void
   error: unknown
+  defaultValues?: {
+    name?: string
+    email?: string
+  }
 }
 
-export function CreateUserForm({ actionLabel, onSubmit, error }: CreateUserFormProps) {
+export function CreateUserForm({ actionLabel, onSubmit, error, defaultValues }: CreateUserFormProps) {
   return (
     <FormCard
       badge="01"
-      title="Create account"
-      subtitle="Start with the account holder."
+      title="Update account"
+      subtitle="Update the primary account holder details."
       actionLabel={actionLabel}
       onSubmit={(formData) => {
         onSubmit({
@@ -172,13 +176,13 @@ export function CreateUserForm({ actionLabel, onSubmit, error }: CreateUserFormP
         })
       }}
     >
-      <TextField label="Name" name="name" placeholder="Mbongeni" required />
-      <TextField label="Email" name="email" type="email" placeholder="you@example.com" required />
+      <TextField label="Name" name="name" placeholder="Mbongeni" required defaultValue={defaultValues?.name} />
+      <TextField label="Email" name="email" type="email" placeholder="you@example.com" required defaultValue={defaultValues?.email} />
       <TextField
         label="Password"
         name="password"
         type="password"
-        placeholder="Choose a password"
+        placeholder="Enter password to verify changes"
         required
       />
       {error ? <FormError error={error} /> : null}
